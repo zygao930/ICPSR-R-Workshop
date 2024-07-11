@@ -101,3 +101,40 @@ merged_data[merged_data==-77]<-NA
 table(merged_data$new_formov)
 
 #Tidyverse
+library(tidyr)
+install.packages("tidyverse")
+library(tidyverse)
+
+dim(qog)
+
+qog_ciri<-qog %>% select(ccode, cname, year,
+                         ciri_assn,ciri_dommov,ciri_formov,ciri_injud,
+                         ciri_physint,ciri_worker,ciri_speech)
+head(qog_ciri)
+qog2005<-qog %>% filter(year>2004)
+summary(qog2005$year)
+
+#merging in tidyverse
+merged_data<-qog_ciri %>% left_join(polity,by=c("ccode"="ccode","year"="year"))
+summary(merged_data)
+
+#replace dummy variables
+merged_data<-merged_data %>% mutate(democracy=ifelse(p_polity2>6,1,0))
+table(merged_data$democracy)
+
+merged_data2<-merged_data %>% mutate(ciri_worker2=recode(ciri_worker,
+                                                        "0" = "severly_restricted",
+                                                        "1" = "somewhat_restricted",
+                                                        "2" = "no_restricted",
+                                                        "-66"=NULL,
+                                                        "-77"=NULL
+                                                        ))
+table(merged_data2$ciri_worker2)
+merged_data2<-merged_data %>% mutate(new_ciri_assn=ciri_assn*100)
+
+#arrange data
+merged_data_arrange<-merged_data %>% arrange(cname,year)
+head(merged_data_arrange)
+
+#reshaping
+
