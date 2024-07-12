@@ -30,7 +30,7 @@ table(mydata$RecipientName)
 table(mydata$FlowCode)
 summary(mydata$FlowCode)
 
-install.packages("foreign")
+#install.packages("foreign")
 library(foreign)
 
 #read stata data
@@ -39,7 +39,7 @@ names(stata.data)
 summary(stata.data)
 dim(stata.data)
 
-install.packages("readstata13")
+#install.packages("readstata13")
 library(readstata13)
 qog<-read.dta13("ch3_qog-1.dta")
 names(qog)
@@ -89,7 +89,7 @@ table(merged_data$democracy)
 
 
 install.packages("car")
-library(car)
+#library(car)
 merged_data$new_formov<-car::recode(merged_data$ciri_formov,"
                                     0='servely_restricted';
                                     1='somewhat_restricted';
@@ -102,7 +102,7 @@ table(merged_data$new_formov)
 
 #Tidyverse
 library(tidyr)
-install.packages("tidyverse")
+#install.packages("tidyverse")
 library(tidyverse)
 
 dim(qog)
@@ -136,5 +136,39 @@ merged_data2<-merged_data %>% mutate(new_ciri_assn=ciri_assn*100)
 merged_data_arrange<-merged_data %>% arrange(cname,year)
 head(merged_data_arrange)
 
-#reshaping
+#descriptive stats
+nes20<-read.csv("nes2020_subset.csv")
+head(nes20)
+summary(nes20$ft_science)
 
+mean(nes20$ft_congress,na.rm = TRUE)
+sd(nes20$ft_congress,na.rm = TRUE)
+var(nes20$ft_congress,na.rm = TRUE)
+IQR(nes20$ft_congress,na.rm = TRUE)
+
+#install.packages("moments")
+library(moments)
+
+table(nes20$vote)
+prop.table(table(nes20$vote))
+
+library(tidyverse)
+
+#the summarise for mean
+nes20 %>% summarise(mean(ft_congress,na.rm=TRUE))
+
+nes20 %>% summarise(median(ft_congress,na.rm=TRUE))
+
+#specific summarise on target variable with stats
+nes20 %>% summarise_at(vars(ft_congress,ft_science),
+                       funs(mean(.,na.rm=TRUE),
+                            sd(.,na.rm=TRUE),
+                            var(.,na.rm=TRUE),
+                            length))
+
+#groupby summarise
+nes20 %>% group_by(vaccines) %>% summarise_at(vars(ft_congress,ft_science),
+                                              funs(mean(.,na.rm=TRUE),
+                                                   sd(.,na.rm=TRUE),
+                                                   var(.,na.rm=TRUE),
+                                                   length))
