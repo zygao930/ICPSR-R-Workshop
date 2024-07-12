@@ -214,3 +214,47 @@ boxplot(ft_congress~vote,data=nes20,
         xlab='',
         names=c('Non-voter','voter'))
 
+#ggplot2
+ggplot(data=nes20,aes(x=ft_science,y=ft_biden))
+
+#install.packages('poliscidata')
+library(poliscidata)
+library(ggplot2)
+
+worlddata<-poliscidata::world
+head(worlddata)
+
+#ggplot histogram
+ggplot(data=worlddata,aes(x=women13))+
+  geom_histogram(bins=21,color='black',fill='grey')+
+  theme_bw()+
+  ggtitle('women in legislature')+
+  xlab('woman in legislature(2013)')
+
+library(dplyr)
+#ggplot barchart
+ggplot(data=worlddata %>% filter(!is.na(regime_type3)),
+       aes(x=regime_type3,fill=hi_gdp))+
+  theme_minimal()+
+  geom_bar()
+
+#boxplot
+ggplot(data=worlddata %>% filter(!is.na(regime_type3)),
+       aes(x=regime_type3,y=gdppcap08))+
+  geom_boxplot(color='blue')+
+  coord_flip()
+
+#geompoint
+ggplot(data=worlddata %>% filter(!is.na(regime_type3)),
+       aes(x=gdppcap08,y=hdi,color=regime_type3))+
+  geom_point(size=3)+
+  theme(legend.title=element_blank())+
+  theme_bw()+
+  labs(color='regime_type')+
+  geom_text(aes(label=country),size=1.2,color='black')
+
+#geosmooth
+ggplot(data=worlddata %>% filter(!is.na(regime_type3)),
+       aes(x=gdppcap08,y=hdi,color=regime_type3))+
+  geom_smooth()+
+  geom_point(color='black')
