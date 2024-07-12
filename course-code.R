@@ -154,21 +154,63 @@ prop.table(table(nes20$vote))
 
 library(tidyverse)
 
-#the summarise for mean
+#the summarize for mean
 nes20 %>% summarise(mean(ft_congress,na.rm=TRUE))
 
 nes20 %>% summarise(median(ft_congress,na.rm=TRUE))
 
-#specific summarise on target variable with stats
+#specific summarize on target variable with stats
 nes20 %>% summarise_at(vars(ft_congress,ft_science),
                        funs(mean(.,na.rm=TRUE),
                             sd(.,na.rm=TRUE),
                             var(.,na.rm=TRUE),
                             length))
 
-#groupby summarise
+#groupby summarize
 nes20 %>% group_by(vaccines) %>% summarise_at(vars(ft_congress,ft_science),
                                               funs(mean(.,na.rm=TRUE),
                                                    sd(.,na.rm=TRUE),
                                                    var(.,na.rm=TRUE),
                                                    length))
+
+#data visualization
+#density plot
+plot(density(nes20$ft_congress,na.rm=TRUE),
+     main='density of a continuous variable',
+     xlim=c(0,100))
+
+#histogram
+hist(nes20$ft_congress,
+     main='history of ft_congress',
+     xlab='feeling thermometer score')
+
+hist(nes20$ft_science,
+     main='history of ft_science',
+     xlab='feeling thermometer score',
+     col='lightblue',
+     breaks=seq(0,100,by=10),
+     xaxt='n',
+     axis(side=1,at=c(5,15,35,55,65,75,85,95)))
+
+#barplot
+barplot(table(nes20$freetrade),
+        main='barplot of freetrade',
+        xlab='Frequency',
+        col='aquamarine4',
+        xlim=c(0,5000),
+        horiz=TRUE,las=1)
+
+barplot(table(nes20$party),
+        main="barplot of party",
+        ylab='frequency',
+        names.arg=c('democrat','republician','indepedent','other'),
+        cex.names = 0.85)
+
+#scatterplot
+plot(x=nes20$ft_science,y=nes20$ft_harris,pch=16,col='skyblue3')
+
+#boxplot
+boxplot(ft_congress~vote,data=nes20,
+        xlab='',
+        names=c('Non-voter','voter'))
+
